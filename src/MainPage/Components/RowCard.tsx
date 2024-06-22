@@ -2,8 +2,8 @@ import React, { useEffect, useRef } from 'react';
 import { Animated, PanResponder, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { screenHeight } from '../../Utils/ScreenDimentions';
 
-const leftButtons = ['btn1', 'btn2', 'btn3'];
-const rightButtons = ['btn1', 'btn2'];
+const leftButtons = ['Delete'];
+const rightButtons = ['Edit', 'Complete'];
 const btnWidth = 80;
 const offset = [-btnWidth * rightButtons.length, btnWidth * leftButtons.length];
 
@@ -98,7 +98,7 @@ export default function SwipableItem() {
 
 const styles = StyleSheet.create({
     container: {
-        height: screenHeight *0.06,
+        height: 55,
         width: '100%',
         marginBottom: 3,
         paddingHorizontal: 20
@@ -108,7 +108,7 @@ const styles = StyleSheet.create({
         width: '100%',
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: '#aa3e82',
+        backgroundColor: '#aa3e82'
     },
     txt: {
         color: '#fff',

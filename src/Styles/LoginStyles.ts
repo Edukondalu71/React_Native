@@ -1,13 +1,27 @@
 import { Dimensions, StyleSheet } from "react-native";
+import { screenHeight, screenWidth } from "../Utils/ScreenDimentions";
 
  export const LoginStyles = StyleSheet.create({
     loginContainer: {
         display: 'flex',
-        height: Dimensions.get('screen').height,
-        width: Dimensions.get('screen').width,
+        height: screenHeight,
+        width: screenWidth,
         justifyContent: 'center',
         alignItems: 'center',
     },
+    errormsg: {
+        //marginLeft: 20,
+        color: 'red',
+        fontSize: 10,
+        fontStyle: 'normal',
+        marginVertical: 2,
+        marginLeft: 10
+    },
+    smallIcon: {
+        marginRight: 10,
+        fontSize: 18,
+        width:18
+      },     
     centeredView: {
         display:'flex',
         justifyContent:'center',
@@ -100,7 +114,8 @@ import { Dimensions, StyleSheet } from "react-native";
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'flex-start',
-        marginBottom: 15,
+        alignItems:'center',
+        marginBottom: 2,
         height: 40,
         padding: 0,
         paddingLeft: 10,
@@ -119,12 +134,12 @@ import { Dimensions, StyleSheet } from "react-native";
         elevation: 15,
     },
     passwordinput: {
-        width: 235,
+        //width: 235,
         height: 40,
-        color: '#000',
         fontSize: 16,
         padding: 0,
-        margin:0
+        margin:0,
+        color:'#000000'
     },
     pswicon: {
         width: 30,
@@ -170,7 +185,7 @@ import { Dimensions, StyleSheet } from "react-native";
     forgotPassword: {
         //marginLeft: '41%',
         color: '#8f8888',
-        fontSize: 14,
+        fontSize: 16,
         fontWeight: '500',
         textDecorationLine: 'underline',
     },

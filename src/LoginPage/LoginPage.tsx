@@ -1,9 +1,13 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Image, Keyboard, useColorScheme, Animated, Alert, BackHandler } from 'react-native';
+import React, { useContext, useEffect, useState } from 'react';
+import { View, Text, TextInput, TouchableOpacity, Image, Keyboard, Animated, Alert, BackHandler } from 'react-native';
 import ProfileIcon from '../Images/profile.png';
 import { getLogin } from '../Utils/ApiService\'/getLogin';
 import { LoginStyles as styles } from '../Styles/LoginStyles';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import Feather from 'react-native-vector-icons/Feather';
+import { ThemeContext } from '../../ThemeProvider';
+import { AuthContext } from '../../AuthContext';
 
 const LoginScreen = ({ navigation }: any) => {
     const [username, setUsername] = useState<string>('');
@@ -11,29 +15,32 @@ const LoginScreen = ({ navigation }: any) => {
     const [loader, setLoader] = useState(false);
     const [errorMsg, setErrorMsg] = useState(null);
     const [pswIconState, setPswIconState] = useState(true);
-    const colorScheme = useColorScheme();
-    const [bgColor, setBgColor] = useState('#FFFFFF');
-    const [color, setColor] = useState('#FFFFFF');
+    const {color, bgColor} = useContext(ThemeContext);
     const [translateValue] = useState(new Animated.Value(0));
+    const {setAuthUser} = useContext(AuthContext)
 
     useEffect(() => {
         const backAction = () => {
-          Alert.alert('Hold on!', 'Are you sure you want to go Exit ?', [
-            {
-              text: 'Cancel',
-              onPress: () => null,
-              style: 'cancel',
-            },
-            {text: 'YES', onPress: () => BackHandler.exitApp()},
-          ]);
-          return true;
+            Alert.alert('Hold on!', 'Are you sure you want to go Exit ?', [
+                {
+                    text: 'Cancel',
+                    onPress: () => null,
+                    style: 'cancel',
+                },
+                { text: 'YES', onPress: () => {
+                    ClearInputs();
+                    BackHandler.exitApp()
+                }
+                },
+            ]);
+            return true;
         };
-    
+
         const backHandler = BackHandler.addEventListener(
-          'hardwareBackPress',
-          backAction,
+            'hardwareBackPress',
+            backAction,
         );
-    
+
         return () => backHandler.remove();
     }, []);
 
@@ -44,8 +51,12 @@ const LoginScreen = ({ navigation }: any) => {
         let fetchData = await getLogin({ username, password })
 
         if (fetchData.status === 200) {
+            let response = await fetchData.json();
             setErrorMsg(null);
-            await AsyncStorage.setItem('user', username);
+            await AsyncStorage.setItem('authToken', response?.token);
+            await AsyncStorage.setItem('username', username);
+            setAuthUser(response?.token);
+            ClearInputs();
             navigation.navigate('Home');
         } else {
             if (typeof fetchData.status === 'number') {
@@ -56,13 +67,7 @@ const LoginScreen = ({ navigation }: any) => {
             }
         }
         setLoader(false);
-    };;
-
-
-    useEffect(() => {
-        setBgColor(colorScheme === 'dark' ? '#000000' : '#FFFFFF');
-        setColor(colorScheme === 'dark' ? '#FFFFFF' : '#000000');
-    }, [colorScheme])
+    };
 
     const _keyboardDidShow = () => {
         Animated.timing(translateValue, {
@@ -89,13 +94,19 @@ const LoginScreen = ({ navigation }: any) => {
             'keyboardDidHide',
             _keyboardDidHide
         );
-
         return () => {
             keyboardDidShowListener.remove();
             keyboardDidHideListener.remove();
         };
     }, []);
 
+    const ClearInputs = () => {
+        setUsername('');
+        setPassword('');
+        setErrorMsg(null);
+        setPswIconState(true);
+        setLoader(false);
+    }
 
     return (
         <View style={[styles.loginContainer, { backgroundColor: bgColor }]}>
@@ -103,17 +114,25 @@ const LoginScreen = ({ navigation }: any) => {
                 <Image source={ProfileIcon} style={styles.profileImage} />
                 <Text style={[styles.title, { color: color }]}> Login </Text>
                 <View style={styles.form}>
-                    <TextInput
-                        style={styles.input}
-                        placeholder="username"
-                        value={username}
-                        readOnly={loader}
-                        placeholderTextColor="gray"
-                        onChangeText={(text) => setUsername(text)}
-                    />
-                    <View style={styles.pswinput}>
+                    <View style={[styles.pswinput, {marginBottom:10}]}>
+                        <FontAwesome
+                            name="user-o"
+                            color="#420475"
+                            style={styles.smallIcon}
+                        />
                         <TextInput
-                            style={styles.passwordinput}
+                            style={[styles.passwordinput, { width: 235 }]}
+                            placeholder="username"
+                            value={username}
+                            readOnly={loader}
+                            placeholderTextColor="gray"
+                            onChangeText={(text) => setUsername(text)}
+                        />
+                    </View>
+                    <View style={[styles.pswinput, {marginBottom:10}]}>
+                        <FontAwesome name="lock" color="#420475" style={styles.smallIcon} />
+                        <TextInput
+                            style={[styles.passwordinput, { width: 210 }]}
                             placeholder="password"
                             placeholderTextColor="gray"
                             value={password}
@@ -121,21 +140,31 @@ const LoginScreen = ({ navigation }: any) => {
                             onChangeText={(text) => setPassword(text)}
                             secureTextEntry={pswIconState}
                         />
-                        <TouchableOpacity disabled={loader} onPress={() => setPswIconState(!pswIconState)} style={styles.pswicon}>
-                            <Text style={styles.pswicontext}>{pswIconState ? 'Hide' : 'Show'}</Text>
+                        <TouchableOpacity onPress={() => setPswIconState(!pswIconState)} style={styles.pswicon}>
+                            <Feather
+                                name={pswIconState ? "eye-off" : "eye"}
+                                color={pswIconState ? 'green' : 'red'}
+                                size={16}
+                            />
                         </TouchableOpacity>
                     </View>
-                    <TouchableOpacity disabled={loader} style={[styles.button, { opacity: loader ? 0.5 : 1 }]} onPress={handleLogin}>
+                    <TouchableOpacity disabled={loader || !username || !password} style={[styles.button, { opacity: loader || !username || !password ? 0.5 : 1 }]} onPress={handleLogin}>
                         <Text style={styles.buttonText}>{loader ? 'Please wait...' : 'Submit'}</Text>
                     </TouchableOpacity>
                 </View>
                 <View style={styles.rowcontainer}>
-                 
-                    <TouchableOpacity disabled={loader} onPress={() => navigation.navigate('Register')}>
+
+                    <TouchableOpacity disabled={loader} onPress={() => {
+                        ClearInputs();
+                        navigation.navigate('Register');
+                    }}>
                         <Text style={[styles.forgotPassword, { color: '#314ed4', fontWeight: '500' }]}>Register</Text>
                     </TouchableOpacity>
-                  
-                    <TouchableOpacity onPress={() => navigation.navigate('ForgotPassword')} disabled={loader} >
+
+                    <TouchableOpacity onPress={() => {
+                        ClearInputs();
+                        navigation.navigate('ForgotPassword');
+                    }} disabled={loader} >
                         <Text style={styles.forgotPassword}>Forgot Password?</Text>
                     </TouchableOpacity>
                 </View>

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import {
     Animated,
     Dimensions,
@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import SwipableItem from '../Components/RowCard';
+import { ThemeContext } from '../../../ThemeProvider';
 
 const { width } = Dimensions.get('screen');
 const headerHeight = 300;
@@ -34,8 +35,9 @@ const DATA = [
     { id: 20 },
 ];
 
-const ProfileScreen = () => {
+const MenuScreen = () => {
     const scrollY = useRef(new Animated.Value(0)).current;
+    const {bgColor} = useContext(ThemeContext);
     const [textWidth, setTextWidth] = useState(0);
     const offset = headerHeight - headerFinalHeight;
     const translateHeader = scrollY.interpolate({
@@ -71,37 +73,31 @@ const ProfileScreen = () => {
         outputRange: [1, 0.8],
         extrapolate: 'clamp',
     });
-    const renderItem = ({ index }:any) => {
+    const renderItem = ({ index }: any) => {
         if (index == 0)
             return (
                 <Animated.View
-                    style={[styles.header, { transform: [{ translateY: translateHeader }] }]}>
+                    style={[styles.header,{backgroundColor: bgColor},{ transform: [{ translateY: translateHeader }] }]}>
                     <Animated.View
                         style={[
                             styles.image,
                             {
                                 transform: [
                                     { translateY: translateImageY },
-                                    { translateX: translateImageX },
+                                    // { translateX: translateImageX },
                                     { scale: scaleImage },
                                 ],
                             },
                         ]}>
-                        <Image
-                            source={{
-                                uri: 'https://i.ibb.co/YySxPQC/pro.jpeg',
-                            }}
-                            style={styles.img}
-                            resizeMode="cover"
-                        />
+                        <Image source={{ uri: 'https://i.ibb.co/YySxPQC/pro.jpeg' }} style={styles.img} resizeMode="cover" />
                     </Animated.View>
-                    <Animated.Text
+                    {/* <Animated.Text
                         onTextLayout={e => setTextWidth(e.nativeEvent.lines[0].width)}
                         style={[
                             styles.name,
                             { transform: [{ translateX: translateName }, { scale: scaleName }] },
                         ]}>{user}
-                    </Animated.Text>
+                    </Animated.Text> */}
                 </Animated.View>
             );
         return <SwipableItem />;
@@ -122,6 +118,7 @@ const ProfileScreen = () => {
             data={DATA}
             renderItem={renderItem}
             keyExtractor={item => item?.id}
+            style={{backgroundColor: bgColor}}
             stickyHeaderIndices={[0]}
             onScroll={Animated.event([{ nativeEvent: { contentOffset: { y: scrollY } } }], {
                 useNativeDriver: false,
@@ -140,7 +137,6 @@ const styles = StyleSheet.create({
     header: {
         height: headerHeight,
         marginBottom: 5,
-        backgroundColor: '#f2f2f2',
         alignItems: 'center',
         justifyContent: 'center',
     },
@@ -166,4 +162,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default ProfileScreen;
+export default MenuScreen

@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { Animated, Easing, StyleSheet, View, useColorScheme } from 'react-native';
+import React, { useState, useEffect, useContext } from 'react';
+import { Animated, Easing, StyleSheet, View } from 'react-native';
+import { ThemeContext } from '../../ThemeProvider';
 
 const random = () => (parseInt(Math.random() * 255));
 const randomColor = () => 'rgb(' + random() + ',' + random() + ',' + random() + ')'
@@ -8,20 +9,13 @@ const dim = 90;
 
 const Loader1 = () => {
     const animation = useState(new Animated.Value(0))[0];
-    const colorScheme = useColorScheme();
-    const [bgColor, setBgColor] = useState('#FFFFFF');
-    const [color, setColor] = useState('#FFFFFF');
-
-    useEffect(() => {
-        setBgColor(colorScheme === 'dark' ? '#000000' : '#FFFFFF');
-        setColor(colorScheme === 'dark' ? '#FFFFFF' : '#000000');
-    }, [colorScheme])
+    const { bgColor } = useContext(ThemeContext);
 
     useEffect(() => {
         const animationLoop = Animated.loop(
             Animated.timing(animation, {
                 toValue: 1,
-                duration: 3000,
+                duration: 2500,
                 easing: Easing.linear,
                 useNativeDriver: true
             })
@@ -59,7 +53,7 @@ const Loader1 = () => {
     const backgroundColor = randomColor();
 
     return (
-        <View style={[styles.container, {backgroundColor: bgColor}]}>
+        <View style={[styles.container, { backgroundColor: bgColor }]}>
             <View style={{ width: dim, height: dim }}>
                 <Animated.View style={{ ...styles.item, backgroundColor, transform: [{ translateX: left1 }, { translateY: top1 }, { rotate: angleValue }] }} />
                 <Animated.View style={{ ...styles.item, backgroundColor, transform: [{ translateX: left2 }, { translateY: top2 }, { rotate: angleValue }] }} />
