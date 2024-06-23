@@ -9,7 +9,7 @@ const AuthProvider = ({ children }) => {
   const [userId, setUserId] = useState(null);
   const [user, setUser] = useState('');
   const [authUser, setAuthUser] = useState(null);
-  console.log("BABE AU", authUser)
+  
   useEffect(() => {
     const fetchUser = async () => {
       const token = await AsyncStorage.getItem('authToken');

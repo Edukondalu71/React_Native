@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "273237078798",
+    "project_id": "notify-a79db",
+    "storage_bucket": "notify-a79db.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:273237078798:android:c05f3e41552793f3991d5f",
+        "android_client_info": {
+          "package_name": "com.todo"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDmfuOIcawcyaAGDKEafDQiaZkvlehc8uc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -15,7 +15,7 @@ const StoreContextProvider = ({ children }) => {
     getFriends();
     try {
       let response = await getUsers(userId);
-      console.log('users', response?.data);
+      
       setUsers(response?.data);
     } catch (error) {
       console.log('error', error?.message)
@@ -25,7 +25,7 @@ const StoreContextProvider = ({ children }) => {
   const getUserRequestList = async () => {
     try {
       let response = await getUsersRequests(userId);
-      console.log('usersRequests', response);
+     
       setUsersRequests(response);
     } catch (error) {
       console.log('error', error?.message)
@@ -36,7 +36,7 @@ const StoreContextProvider = ({ children }) => {
     try {
       let response = await getFriendsList(userId);
       setFriendsList(response);
-      console.log('getFriendsList', response);
+     
     } catch (error) {
       console.log('error', error?.message)
     }

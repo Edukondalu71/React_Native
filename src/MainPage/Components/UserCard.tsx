@@ -1,5 +1,5 @@
 import React, { useContext, useRef, useState } from "react";
-import { ActivityIndicator, Animated, Pressable, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, Animated, Image, Pressable, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { screenHeight } from "../../Utils/ScreenDimentions";
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { sendRequest } from "../../Utils/ApiService'/getLogin";
@@ -34,10 +34,11 @@ const UserCard = ({ item, index }: any) => {
     const [msg, setMsg] = useState(null);
     const OnRequest = async () => {
         try {
+            setLoader(true);
             let response = await sendRequest({ senderId: userId, receiverId: item["_id"], message: `${user} sent friend request` });
             let data = await response.json();
             setMsg(data?.message);
-            console.log('repo##', data?.message);
+            //console.log('repo##', data?.message);
             setLoader(false);
             getUserRequestList();
             getFriends();
@@ -62,7 +63,8 @@ const UserCard = ({ item, index }: any) => {
     return (
         <Animated.View style={[styles.card, { opacity, transform: [{ translateY }, { scale }] }]}>
             <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-                <FontAwesome name="user-o" color="#420475" style={{ fontSize: screenHeight * 0.03, marginRight: 10 }} />
+                {/* <FontAwesome name="user-o" color="#420475" style={{ fontSize: screenHeight * 0.03, marginRight: 10 }} /> */}
+                <Image source={{ uri: 'https://p7.hiclipart.com/preview/1000/241/314/nandamuri-balakrishna-simha-youtube-tollywood-film-tdp.jpg' }} style={{ width: 50, height: 50, borderRadius: 60, marginHorizontal: 6 }} />
                 <Text style={{ color: '#000000', fontSize: 16, fontWeight: '600' }}>{item?.username}</Text>
             </View>
 
@@ -83,7 +85,7 @@ const styles = StyleSheet.create({
         flex: 1,
         marginHorizontal: 20,
         marginVertical: 5,
-        height: screenHeight * 0.08,
+        //height: screenHeight * 0.08,
         backgroundColor: '#fff',
         borderRadius: 5,
         shadowColor: '#b6a9a9',
@@ -92,10 +94,12 @@ const styles = StyleSheet.create({
             height: 5,
         },
         shadowOpacity: 1,
-        shadowRadius: 10,
-        elevation: 25,
+        shadowRadius: 15,
+        elevation: 3,
         flexDirection: 'row',
-        paddingHorizontal: 25,
+        paddingLeft: 5,
+        paddingVertical:8,
+        paddingRight:25,
         justifyContent: 'space-between',
         alignItems: 'center'
     }

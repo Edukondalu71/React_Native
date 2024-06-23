@@ -15,6 +15,7 @@ const Drawer = createDrawerNavigator();
 const Home = () => {
   const [popup, setPopup] = useState(false);
   const { usersRequests, getUserList } = useContext<any>(StoreContext);
+  
   useEffect(() => {
     function backAction() {
       Alert.alert('Hold on!', 'Are you sure you want to go Exit ?', [
@@ -54,13 +55,14 @@ const Home = () => {
               <Text style={styles.popuptext}>Friend requests</Text>
             <Icon onPress={() => setPopup(false)} name="close" color={'#000000'} size={25} />
             </View>
-            <ScrollView>
+            <ScrollView style={{padding:5}}>
               {list && list.length > 0 ? list?.map((el: any) => <RequestCard close={() => setPopup(false)} userData={el} Key={el?.from["_id"]} />) : <NoDataCard msg={"No friend requests !"} />}
             </ScrollView>
           </SafeAreaView>
         </View>
       </Modal>
-      <Drawer.Navigator initialRouteName="Users" drawerContent={props => <DrawerContent {...props} />} >
+      <Drawer.Navigator initialRouteName="chat" drawerContent={props => <DrawerContent {...props} />} >
+      <Drawer.Screen name="chat" component={ChatScreen} options={{ headerShown: true }} />
         <Drawer.Screen name="Users" component={UserScreen} options={{
           headerRight: () => (
             <Pressable onPress={() => {
@@ -73,7 +75,6 @@ const Home = () => {
             </Pressable>
           ),
         }} />
-        <Drawer.Screen name="chat" component={ChatScreen} options={{ headerShown: true }} />
         <Drawer.Screen name="Profile" component={ProfileScreen} options={{ headerShown: true }} />
       </Drawer.Navigator>
     </>
@@ -111,10 +112,10 @@ const styles = StyleSheet.create({
   },
   card: {
     backgroundColor: '#FFFFFF',
-    //minHeight: screenHeight * 0.3,
-    minWidth: screenWidth * 0.9,
+    minHeight: screenHeight * 0.4,
+    minWidth: screenWidth * 0.95,
     maxHeight: screenHeight * 0.6,
-    maxWidth: screenWidth * 0.9,
+    maxWidth: screenWidth * 0.95,
     borderRadius: 9,
     padding: 15,
     overflow: 'scroll'

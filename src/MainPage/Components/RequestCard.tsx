@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-import { ActivityIndicator, Button, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, Button, Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { screenHeight } from "../../Utils/ScreenDimentions";
 import { AceptRequest } from "../../Utils/ApiService'/getLogin";
@@ -7,7 +7,7 @@ import { AuthContext } from "../../../AuthContext";
 import { useNavigation } from "@react-navigation/native";
 
 const RequestCard = ({ userData, close }: any) => {
-    console.log('RequestCard', userData);
+    //console.log('RequestCard', userData);
     const username = userData?.message.split("sent friend request")[0]
     const { userId } = useContext(AuthContext);
     const [requestState, setRequestState] = useState(false);
@@ -22,9 +22,10 @@ const RequestCard = ({ userData, close }: any) => {
         setLoader(false);
     }
     return (
-        <View style={[requestCardStyle.container, { justifyContent: 'space-between' }]}>
+        <View style={[requestCardStyle.container,requestCardStyle.elevation, { justifyContent: 'space-between'}]}>
             <View style={requestCardStyle.container}>
-                <FontAwesome name="user-o" color="#420475" style={{ fontSize: screenHeight * 0.03, marginRight: 10 }} />
+                {/* <FontAwesome name="user-o" color="#420475" style={{ fontSize: screenHeight * 0.03, marginRight: 10 }} /> */}
+                <Image source={{ uri: 'https://p7.hiclipart.com/preview/1000/241/314/nandamuri-balakrishna-simha-youtube-tollywood-film-tdp.jpg' }} style={{ width: 50, height: 50, borderRadius: 60, marginHorizontal: 6 }} />
                 <Text style={requestCardStyle.name}>{username}</Text>
             </View>
             <View style={requestCardStyle.container}>
@@ -56,17 +57,28 @@ const RequestCard = ({ userData, close }: any) => {
 const requestCardStyle = StyleSheet.create({
     container: {
         display: 'flex',
-        height: 45,
+        //height: 45,
         marginBottom: 5,
         flexDirection: 'row',
+        justifyContent:'center',
         alignItems: 'center',
-        borderWidth: 0
     },
     name: {
         color: '#000000',
         fontSize: 16,
         fontWeight: '600',
         marginLeft: 10
+    },
+    elevation : {
+        shadowColor: '#b6a9a9',
+        shadowOffset: {
+          width: 5,
+          height: 5,
+        },
+        shadowOpacity: 1,
+        shadowRadius: 15,
+        elevation: 5,
+        marginBottom: 10,
     },
     button: {
         height: 28,

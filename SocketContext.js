@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 import io from 'socket.io-client';
 import { AuthContext } from './AuthContext';
-import { SOCKET_URL } from './src/Utils/ApiService\'/BaseUrl';
+import { BASE_URL } from './src/Utils/ApiService\'/BaseUrl';
 
 const SocketContext = createContext();
 
@@ -12,7 +12,7 @@ export const SocketContextProvider = ({ children }) => {
   const { userId } = useContext(AuthContext);
   useEffect(() => {
     if (userId) {
-      const socket = io(SOCKET_URL, {
+      const socket = io(BASE_URL, {
         query: {
           userId: userId,
         },

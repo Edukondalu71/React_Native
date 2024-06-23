@@ -8,6 +8,7 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Feather from 'react-native-vector-icons/Feather';
 import { ThemeContext } from '../../ThemeProvider';
 import { AuthContext } from '../../AuthContext';
+import { getFCMToken } from '../Utils/notificationService';
 
 const LoginScreen = ({ navigation }: any) => {
     const [username, setUsername] = useState<string>('');
@@ -48,7 +49,8 @@ const LoginScreen = ({ navigation }: any) => {
         setLoader(true);
         setErrorMsg(null);
         Keyboard.dismiss();
-        let fetchData = await getLogin({ username, password })
+        let fcmToken = await getFCMToken();
+        let fetchData = await getLogin({ username, password, fcmToken })
 
         if (fetchData.status === 200) {
             let response = await fetchData.json();

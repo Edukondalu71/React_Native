@@ -1,17 +1,15 @@
 import React, { useContext, useRef } from 'react';
-import { Animated, Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Animated, ScrollView, StyleSheet } from 'react-native';
 import { StoreContext } from '../../../StoreContext';
-import { useNavigation } from '@react-navigation/native';
 import Chat from './chat';
 
 const headerHeight = 120;
 export default function ChatScreen() {
     const scrollY = useRef(new Animated.Value(0)).current;
     const { friendsList } = useContext<any>(StoreContext);
-    const navigation:any = useNavigation();
     return (
         <ScrollView
-            contentContainerStyle={{padding:20}}
+            contentContainerStyle={{padding:15, backgroundColor:'#ddd', height:'100%'}}
             onScroll={Animated.event(
                 [{ nativeEvent: { contentOffset: { y: scrollY } } }],
                 { useNativeDriver: false },

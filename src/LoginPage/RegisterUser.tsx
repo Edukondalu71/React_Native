@@ -10,6 +10,7 @@ import Fontisto from 'react-native-vector-icons/Fontisto';
 import Error from 'react-native-vector-icons/MaterialIcons';
 import { debounce, handleEmail, handleMobile, handleName, handlePassword } from './Utils';
 import { ThemeContext } from '../../ThemeProvider';
+import { getFCMToken } from '../Utils/notificationService';
 
 const RegisterUser = ({ navigation }: any) => {
     const [username, setUsername] = useState<any>(null);
@@ -29,7 +30,9 @@ const RegisterUser = ({ navigation }: any) => {
         setLoader(true);
         setErrorMsg(null);
         Keyboard.dismiss();
-        let fetchData = await regUser({ username, password, mobileNumber, email });
+        const fcmToken = await getFCMToken();
+        //console.log('fcmToken', fcmToken);
+        let fetchData = await regUser({ username, password, mobileNumber, email, fcmToken });
         if (fetchData.status === 200) {
             setErrorMsg(null);
             setShow(true);
@@ -90,10 +93,10 @@ const RegisterUser = ({ navigation }: any) => {
         if (user.length >= 3 && !nameLoader) {
             setNameApiRes('');
             setNameLoader(true);
-            console.log(user, username);
+            //console.log(user, username);
             let response = await isValidUserName(user);
             let msg = response;
-            console.log('res', msg);
+            //console.log('res', msg);
             if (response?.data == "OK") {
                 setUserNameState(true);
                 setNameApiRes('')

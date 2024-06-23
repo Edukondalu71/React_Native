@@ -7,18 +7,18 @@ Sound.setCategory('Playback');
 // See notes below about preloading sounds within initialization code below.
 export const sent = new Sound('send.mp3', Sound.MAIN_BUNDLE, (error) => {
   if (error) {
-    console.log('failed to load the sound', error);
+    //console.log('failed to load the sound', error);
     return;
   }
   // loaded successfully
-  console.log('duration in seconds: ' + sent.getDuration() + 'number of channels: ' + sent.getNumberOfChannels());
+  //console.log('duration in seconds: ' + sent.getDuration() + 'number of channels: ' + sent.getNumberOfChannels());
 });
 
 export const recive = new Sound('recive.mp3', Sound.MAIN_BUNDLE, (error) => {
     if (error) {
-      console.log('failed to load the sound', error);
+      //console.log('failed to load the sound', error);
       return;
     }
     // loaded successfully
-    console.log('duration in seconds: ' + sent.getDuration() + 'number of channels: ' + sent.getNumberOfChannels());
+    //console.log('duration in seconds: ' + sent.getDuration() + 'number of channels: ' + sent.getNumberOfChannels());
   });

@@ -6,7 +6,8 @@ import {
     TextInput,
     View,
     KeyboardAvoidingView,
-    TouchableOpacity
+    TouchableOpacity,
+    Image
 } from 'react-native';
 import React, { useContext, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { useNavigation, useRoute } from '@react-navigation/native';
@@ -42,6 +43,7 @@ const LibraryScreen = () => {
             headerLeft: () => (
                 <TouchableOpacity onPress={() => navigation.goBack()} style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
                     <Ionicons name="arrow-back" size={24} color="black" />
+                    <Image source={{ uri: 'https://p7.hiclipart.com/preview/1000/241/314/nandamuri-balakrishna-simha-youtube-tollywood-film-tdp.jpg' }} style={{ width: 40, height: 40, borderRadius: 60, marginHorizontal: 6 }} />
                     <View>
                         <Text style={{ color: '#000000', fontSize: 20, fontWeight: '500' }}>{route?.params?.name}</Text>
                     </View>
@@ -59,9 +61,9 @@ const LibraryScreen = () => {
             scrollToBottom();
             recive.play((success) => {
                 if (success) {
-                    console.log('successfully finished playing');
+                    //console.log('successfully finished playing');
                 } else {
-                    console.log('playback failed due to audio decoding errors');
+                    //console.log('playback failed due to audio decoding errors');
                 }
             });
         };
@@ -73,7 +75,8 @@ const LibraryScreen = () => {
         };
     }, [socket]); // Only depend on socket
 
-    const sendMessage = async (senderId, receiverId) => {
+    const sendMessage = async (senderId, receiverId, message) => {
+        setMessage('');
         try {
             await axios.post(`${BASE_URL}/sendMessage`, {
                 senderId,
@@ -86,18 +89,16 @@ const LibraryScreen = () => {
             // Play the sound with an onEnd callback
             sent.play((success) => {
                 if (success) {
-                    console.log('successfully finished playing');
+                    //console.log('successfully finished playing');
                 } else {
-                    console.log('playback failed due to audio decoding errors');
+                    //console.log('playback failed due to audio decoding errors');
                 }
             });
-            setMessage('');
-
             setTimeout(() => {
                 fetchMessages();
             }, 100);
         } catch (error) {
-            console.log('Error', error);
+            console.log('Error', error?.message);
         }
     };
     const fetchMessages = async () => {
@@ -110,7 +111,10 @@ const LibraryScreen = () => {
             });
 
             setMessages(response.data);
-            scrollToBottom();
+            setTimeout(() => {
+                scrollToBottom();
+            }, 300)
+
         } catch (error) {
             console.log('Error', error);
         }
@@ -119,15 +123,14 @@ const LibraryScreen = () => {
         fetchMessages();
         scrollToBottom();
     }, []);
-    console.log('messages', messages);
 
     const formatTime = time => {
         const options = { hour: 'numeric', minute: 'numeric' };
         return new Date(time).toLocaleString('en-US', options);
     };
     return (
-        <KeyboardAvoidingView style={{ flex: 1, backgroundColor: '#000000' }}>
-            <ScrollView ref={scrollViewRef} style={{}}>
+        <KeyboardAvoidingView style={{ flex: 1, backgroundColor: '#ddd' }}>
+            <ScrollView ref={scrollViewRef} automaticallyAdjustsScrollIndicatorInsets>
                 {messages?.map((item) => {
                     return (
                         <Pressable key={item["timeStamp"]}
@@ -139,15 +142,17 @@ const LibraryScreen = () => {
                                         padding: 8,
                                         maxWidth: '60%',
                                         borderRadius: 7,
-                                        margin: 10,
+                                        marginRight:20,
+                                        marginVertical: 5,
 
                                     }
                                     : {
                                         alignSelf: 'flex-start',
                                         backgroundColor: 'white',
                                         padding: 8,
-                                        margin: 10,
+                                        marginVertical: 5,
                                         borderRadius: 7,
+                                        marginLeft:20,
                                         maxWidth: '60%',
                                     },
 
@@ -161,7 +166,7 @@ const LibraryScreen = () => {
 
             <View
                 style={{
-                    height: screenHeight * 0.08,
+                    height: 50,
                     backgroundColor: '#FFFFFF',
                     flexDirection: 'row',
                     alignItems: 'center',
@@ -171,20 +176,22 @@ const LibraryScreen = () => {
                 {/* <Entypo name="emoji-happy" size={24} color="gray" /> */}
 
                 <TextInput
-                    placeholder="type your message..."
+                    placeholder="Type your message..."
                     placeholderTextColor="gray"
                     value={message}
-                    onFocus={() => scrollToBottom()}
+                    onFocus={scrollToBottom}
                     onChangeText={setMessage}
                     style={{
                         flex: 1,
-                        height: screenHeight * 0.05,
-                        borderWidth: 1,
-                        borderColor: '#ddddd',
-                        borderRadius: 20,
+                        //height: screenHeight * 0.05,
+                        borderBottomWidth: 2,
+                        borderColor: '#3ab5fc',
+                        borderTopLeftRadius: 3,
+                        borderTopRightRadius: 3,
                         paddingHorizontal: 15,
                         marginLeft: 10,
-                        color: '#000000'
+                        color: '#000000',
+                        backgroundColor:'#f2f2f2'
                     }}
                 />
 
@@ -201,14 +208,14 @@ const LibraryScreen = () => {
                 </View>
 
                 <Pressable
-                    onPress={() => sendMessage(userId, route?.params?.receiverId)}
+                    onPress={() => sendMessage(userId, route?.params?.receiverId, message)}
                     style={{
-                        backgroundColor: '#0066b2',
+                        //backgroundColor: '#0066b2',
                         paddingHorizontal: 12,
-                        paddingVertical: 8,
-                        borderRadius: 20,
+                        //paddingVertical: 8,
+                        //borderRadius: 20,
                     }}>
-                    <Text style={{ textAlign: 'center', color: 'white' }}>Send</Text>
+                    <Ionicons name="send" size={25} color="#3ab5fc" />
                 </Pressable>
             </View>
         </KeyboardAvoidingView>

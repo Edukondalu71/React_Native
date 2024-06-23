@@ -6,12 +6,16 @@ import RegisterUser from "../LoginPage/RegisterUser"
 import Home from "../MainPage/MainStackScreen"
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import { createNativeStackNavigator } from "@react-navigation/native-stack"
-import React, { useState, useLayoutEffect, useContext, useEffect } from "react"
-import { StyleSheet } from "react-native"
+import React, { useState, useLayoutEffect, useContext } from "react"
+import { Linking } from "react-native"
 import LibraryScreen from "../MainPage/Pages/Library"
-import ProfileScreen from "../MainPage/ProfileScreen"
-import { screenWidth } from "../Utils/ScreenDimentions"
+import messaging from '@react-native-firebase/messaging';
 import { AuthContext } from "../../AuthContext"
+import NoDataCard from "../components/NoData"
+
+messaging().setBackgroundMessageHandler(async remoteMessage => {
+    console.log('Message handled in the background!', remoteMessage?.data);
+});
 
 const StackNavigation = () => {
     const Stack = createNativeStackNavigator();
@@ -25,8 +29,60 @@ const StackNavigation = () => {
         setTimeout(() => {
             setLoader(false);
         }, 1000)
-
     }
+
+    function buildDeepLinkFromNotificationData(data: any) {
+        // name: item?.username,
+        // receiverId: item?._id,
+        return `myapp://ChatRoom/${data?.recieverId}`
+    }
+
+
+    const linking: any = {
+        prefixes: ["myapp://"],
+        config: {
+            initialRouteName: "Home",
+            screens: {
+                login: 'login',
+                chat: 'ChatRoom'
+            },
+        },
+        async getInitialURL() {
+            const url = await Linking.getInitialURL();
+            if (typeof url === 'string') {
+                return url;
+            }
+            //getInitialNotification: When the application is opened from a quit state.
+            const message = await messaging().getInitialNotification();
+            const deeplinkURL = buildDeepLinkFromNotificationData(message?.data);
+            if (typeof deeplinkURL === 'string') {
+                return deeplinkURL;
+            }
+        },
+        subscribe(listener) {
+            const onReceiveURL = ({ url }) => listener(url);
+
+            // Listen to incoming links from deep linking
+            const linkingSubscription = Linking.addEventListener('url', onReceiveURL);
+
+            //onNotificationOpenedApp: When the application is running, but in the background.
+            const unsubscribe = messaging().onNotificationOpenedApp(remoteMessage => {
+                const url = buildDeepLinkFromNotificationData(remoteMessage.data)
+                if (typeof url === 'string') {
+                    listener(url)
+                }
+            });
+
+            return () => {
+                linkingSubscription.remove();
+                unsubscribe();
+            };
+        },
+    };
+
+
+
+
 
     useLayoutEffect(() => {
         setLoader(true);
@@ -36,7 +92,7 @@ const StackNavigation = () => {
     return (
         <>
             {loader ? <FlashScreen /> :
-                <NavigationContainer>
+                <NavigationContainer linking={linking} fallback={<NoDataCard msg={"Loading..."} />}>
                     <Stack.Navigator initialRouteName={checklogData ? 'Home' : "login"}>
                         <Stack.Screen name="login" component={LoginScreen} options={{ headerShown: false }} />
                         <Stack.Screen name="Register" component={RegisterUser} options={{ headerShown: false }} />
@@ -50,26 +106,4 @@ const StackNavigation = () => {
     )
 }
 
-const styles = StyleSheet.create({
-    rowContainer: {
-        display: 'flex',
-        flexDirection: 'row',
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginHorizontal: screenWidth * 0.1
-    },
-    count: {
-        backgroundColor: '#48f531',
-        height: 15,
-        width: 15,
-        borderRadius: 90,
-        textAlign: 'center',
-        marginLeft: -12,
-        zIndex: 99,
-        color: '#FFFFFF',
-        fontSize: 12,
-        fontWeight: '500',
-        marginBottom: 10
-    }
-});
 export default StackNavigation
