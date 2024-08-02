@@ -83,6 +83,15 @@ android {
         versionCode 1
         versionName "1.0"
     }
+    splits {
+        abi {
+            enable true
+            universalApk true  // Set to false if you don't want a universal APK
+            reset()
+            include "armeabi-v7a", "x86", "arm64-v8a", "x86_64"
+        }
+    }
+
     signingConfigs {
         debug {
             storeFile file('debug.keystore')
@@ -94,6 +103,7 @@ android {
     buildTypes {
         debug {
             signingConfig signingConfigs.debug
+
         }
         release {
             // Caution! In production, you need to generate your own keystore file.
@@ -117,6 +127,9 @@ dependencies {
     // The version of react-native is set by the React Native Gradle Plugin
     implementation("com.facebook.react:react-android")
     implementation project(':react-native-vector-icons')
+    // implementation platform('com.google.firebase:firebase-bom:33.1.1')
+    // implementation 'com.google.firebase:firebase-analytics'
+    //implementation project(':react-native-sqlite-storage')
 
     if (hermesEnabled.toBoolean()) {
         implementation("com.facebook.react:hermes-android")

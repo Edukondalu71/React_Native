@@ -14,7 +14,7 @@ export default function ChatScreen() {
                 [{ nativeEvent: { contentOffset: { y: scrollY } } }],
                 { useNativeDriver: false },
             )}>
-            {friendsList?.map((data: any) => <Chat key={data["_id"]} item={data} />)}
+            {friendsList && friendsList?.map((data: any) => <Chat key={data["_id"]} item={data} />)}
         </ScrollView>
     );
 }

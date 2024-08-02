@@ -53,7 +53,7 @@ const Loader1 = () => {
     const backgroundColor = randomColor();
 
     return (
-        <View style={[styles.container, { backgroundColor: bgColor }]}>
+        <View style={[styles.container, {  }]}>
             <View style={{ width: dim, height: dim }}>
                 <Animated.View style={{ ...styles.item, backgroundColor, transform: [{ translateX: left1 }, { translateY: top1 }, { rotate: angleValue }] }} />
                 <Animated.View style={{ ...styles.item, backgroundColor, transform: [{ translateX: left2 }, { translateY: top2 }, { rotate: angleValue }] }} />
@@ -65,8 +65,15 @@ const Loader1 = () => {
 }
 
 const styles = StyleSheet.create({
-    container: { flex: 1, justifyContent: 'center', alignItems: 'center' },
-    item: { width: size, height: size, position: 'absolute' }
+    container: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: "#000000" },
+    item: { width: size, height: size, position: 'absolute', shadowColor: '#FFFFFF',
+        shadowOffset: {
+            width: 5,
+            height: 5,
+        },
+        shadowOpacity: 1,
+        shadowRadius: 15,
+        elevation: 3, }
 });
 
 export default Loader1;

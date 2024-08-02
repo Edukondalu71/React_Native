@@ -1,7 +1,7 @@
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import DrawerContent from "./Components/DrawerContent";
 import { screenHeight, screenWidth } from "../Utils/ScreenDimentions";
-import { Alert, BackHandler, Button, Modal, Pressable, SafeAreaView, ScrollView, StyleSheet, Text, View } from "react-native";
+import { Alert, BackHandler, Modal, Pressable, SafeAreaView, ScrollView, StyleSheet, Text, View } from "react-native";
 import { useContext, useEffect, useState } from "react";
 import UserScreen from "./Pages/UserScreen";
 import ProfileScreen from "./ProfileScreen";
@@ -10,12 +10,17 @@ import { StoreContext } from "../../StoreContext";
 import RequestCard from "./Components/RequestCard";
 import ChatScreen from "./Pages/ChatScreen";
 import NoDataCard from "../components/NoData";
+import { useSocketContext } from "../../SocketContext";
+import { AuthContext } from "../../AuthContext";
+import MapViewLayout from "./Pages/MapView";
 const Drawer = createDrawerNavigator();
 
 const Home = () => {
   const [popup, setPopup] = useState(false);
   const { usersRequests, getUserList } = useContext<any>(StoreContext);
-  
+  const { socket } = useSocketContext();
+  const { userId } = useContext(AuthContext);
+
   useEffect(() => {
     function backAction() {
       Alert.alert('Hold on!', 'Are you sure you want to go Exit ?', [
@@ -24,7 +29,12 @@ const Home = () => {
           onPress: () => null,
           style: 'cancel',
         },
-        { text: 'YES', onPress: () => BackHandler.exitApp() }
+        {
+          text: 'YES', onPress: () => {
+            if(userId) socket.emit('close', {userId});
+            BackHandler.exitApp();
+          }
+        }
       ]);
       return true;
     }
@@ -53,16 +63,16 @@ const Home = () => {
           <SafeAreaView style={styles.card}>
             <View style={styles.close}>
               <Text style={styles.popuptext}>Friend requests</Text>
-            <Icon onPress={() => setPopup(false)} name="close" color={'#000000'} size={25} />
+              <Icon onPress={() => setPopup(false)} name="close" color={'#000000'} size={25} />
             </View>
-            <ScrollView style={{padding:5}}>
+            <ScrollView style={{ padding: 5 }}>
               {list && list.length > 0 ? list?.map((el: any) => <RequestCard close={() => setPopup(false)} userData={el} Key={el?.from["_id"]} />) : <NoDataCard msg={"No friend requests !"} />}
             </ScrollView>
           </SafeAreaView>
         </View>
       </Modal>
       <Drawer.Navigator initialRouteName="chat" drawerContent={props => <DrawerContent {...props} />} >
-      <Drawer.Screen name="chat" component={ChatScreen} options={{ headerShown: true }} />
+        <Drawer.Screen name="chat" component={ChatScreen} options={{ headerShown: true }} />
         <Drawer.Screen name="Users" component={UserScreen} options={{
           headerRight: () => (
             <Pressable onPress={() => {
@@ -76,6 +86,7 @@ const Home = () => {
           ),
         }} />
         <Drawer.Screen name="Profile" component={ProfileScreen} options={{ headerShown: true }} />
+        <Drawer.Screen name="MapView" component={MapViewLayout} options={{ headerShown: false }} />
       </Drawer.Navigator>
     </>
   );
@@ -121,16 +132,16 @@ const styles = StyleSheet.create({
     overflow: 'scroll'
   },
   close: {
-    display:'flex',
-    flexDirection:'row',
-    justifyContent:'space-between',
-    alignItems:'center',
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     marginBottom: 10
   },
   popuptext: {
-    fontSize : 16,
-    color:'#000000',
-    fontWeight:'500'
+    fontSize: 16,
+    color: '#000000',
+    fontWeight: '500'
   }
 });
 

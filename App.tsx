@@ -1,10 +1,10 @@
 import React, { useEffect } from 'react';
 import { AuthProvider } from './AuthContext';
 import { SocketContextProvider } from './SocketContext';
-import StackNavigation from './src/NavigationStack/StackNavigation';
 import { ThemeProvider } from './ThemeProvider';
 import { StoreContextProvider } from './StoreContext';
 import { requestUserPermission } from './src/Utils/notificationService';
+import StackNavigation from './src/Audio/NavigationStack/StackNavigation';
 
 
 function App() {

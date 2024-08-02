@@ -1,3 +1,4 @@
+import axios from "axios";
 import { BASE_URL } from "./BaseUrl";
 
 async function getLogin(data: object) {
@@ -45,7 +46,7 @@ async function regUser(data: object) {
     }
 }
 
-async function getUsers(userId:string) {
+async function getUsers(userId: string) {
     try {
         const response = await fetch(`${BASE_URL}/getusers/${userId}`, {
             method: 'GET',
@@ -55,7 +56,8 @@ async function getUsers(userId:string) {
         });
         return response.json();
     } catch (error) {
-        return error?.message;
+        console.log(error?.message);
+        return []
     }
 }
 
@@ -80,7 +82,8 @@ async function getUsersRequests(userId: string) {
         });
         return await response.json();
     } catch (error) {
-        return error?.message;
+        console.log(error?.message);
+        return []
     }
 }
 
@@ -105,10 +108,32 @@ async function getFriendsList(userId: string) {
         });
         return await response.json();
     } catch (error) {
-        return error?.message;
+        console.log(error?.message);
+        return []
     }
 }
 
+async function getLastActive(userId: string) {
+    try {
+        const response = await fetch(`${BASE_URL}/active/${userId}`, {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' }
+        });
+        return await response.json();
+    } catch (error) {
+        console.log(error?.message);
+        return null
+    }
+}
+async function isLogin(userId: string) {
+    try {
+        const response = await axios.get(`${BASE_URL}/isValid/${userId}`)
+        return response.status;
+    } catch (error) {
+        console.log(error?.message);
+        return {data: error?.message}
+    }
+}
 
 // async function updateUser(data: object) {
 //     try {
@@ -182,4 +207,4 @@ async function getFriendsList(userId: string) {
 //     }
 // }
 
-export { getLogin, regUser, isValidUserName, getUsers, sendRequest, getUsersRequests, AceptRequest, getFriendsList }
+export { getLogin, regUser, isValidUserName, getUsers, sendRequest, getUsersRequests, AceptRequest, getFriendsList, getLastActive, isLogin }

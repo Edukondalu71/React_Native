@@ -55,7 +55,7 @@ const UserCard = ({ item, index }: any) => {
         }
     }
 
-    if(user === item?.username) {
+    if(user === atob(item?.username)) {
         return null
     }
 
@@ -65,7 +65,7 @@ const UserCard = ({ item, index }: any) => {
             <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
                 {/* <FontAwesome name="user-o" color="#420475" style={{ fontSize: screenHeight * 0.03, marginRight: 10 }} /> */}
                 <Image source={{ uri: 'https://p7.hiclipart.com/preview/1000/241/314/nandamuri-balakrishna-simha-youtube-tollywood-film-tdp.jpg' }} style={{ width: 50, height: 50, borderRadius: 60, marginHorizontal: 6 }} />
-                <Text style={{ color: '#000000', fontSize: 16, fontWeight: '600' }}>{item?.username}</Text>
+                <Text style={{ color: '#000000', fontSize: 16, fontWeight: '600' }}>{atob(item?.username)}</Text>
             </View>
 
             {

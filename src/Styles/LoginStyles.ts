@@ -191,6 +191,7 @@ import { screenHeight, screenWidth } from "../Utils/ScreenDimentions";
     },
     errorMsgContainer: {
         marginVertical: 15,
+        maxWidth: screenWidth * 0.8, 
 
     },
     errorMsg: {

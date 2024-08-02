@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Image, Keyboard, Animated, Alert, BackHandler } from 'react-native';
 import ProfileIcon from '../Images/profile.png';
 import { getLogin } from '../Utils/ApiService\'/getLogin';
@@ -30,7 +30,7 @@ const LoginScreen = ({ navigation }: any) => {
                 },
                 { text: 'YES', onPress: () => {
                     ClearInputs();
-                    BackHandler.exitApp()
+                    BackHandler.exitApp();
                 }
                 },
             ]);
@@ -49,9 +49,9 @@ const LoginScreen = ({ navigation }: any) => {
         setLoader(true);
         setErrorMsg(null);
         Keyboard.dismiss();
-        let fcmToken = await getFCMToken();
-        let fetchData = await getLogin({ username, password, fcmToken })
-
+        let fcmToken:any = await getFCMToken();
+        let fetchData = await getLogin({ username: btoa(username), password: btoa(password), fcmToken: btoa(fcmToken) });
+        console.log(fetchData)
         if (fetchData.status === 200) {
             let response = await fetchData.json();
             setErrorMsg(null);
@@ -109,6 +109,7 @@ const LoginScreen = ({ navigation }: any) => {
         setPswIconState(true);
         setLoader(false);
     }
+    const passwordInputRef = useRef<any>(null);
 
     return (
         <View style={[styles.loginContainer, { backgroundColor: bgColor }]}>
@@ -129,6 +130,9 @@ const LoginScreen = ({ navigation }: any) => {
                             readOnly={loader}
                             placeholderTextColor="gray"
                             onChangeText={(text) => setUsername(text)}
+                            returnKeyType="next"
+                            onEndEditing={() => passwordInputRef.current.focus()}
+                            
                         />
                     </View>
                     <View style={[styles.pswinput, {marginBottom:10}]}>
@@ -141,6 +145,8 @@ const LoginScreen = ({ navigation }: any) => {
                             readOnly={loader}
                             onChangeText={(text) => setPassword(text)}
                             secureTextEntry={pswIconState}
+                            returnKeyType="done"
+                            ref={passwordInputRef}
                         />
                         <TouchableOpacity onPress={() => setPswIconState(!pswIconState)} style={styles.pswicon}>
                             <Feather

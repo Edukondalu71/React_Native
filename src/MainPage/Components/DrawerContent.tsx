@@ -1,5 +1,5 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { View, StyleSheet, Image, Alert, Text, Pressable } from 'react-native';
+import React, { useContext } from 'react';
+import { View, StyleSheet, Image, Text, Pressable } from 'react-native';
 import { DrawerContentScrollView, DrawerItem } from '@react-navigation/drawer';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { useNavigation } from '@react-navigation/native';
@@ -12,6 +12,7 @@ const DrawerList = [
   // { icon: 'account-multiple', label: 'Profile', navigateTo: 'Profile' },
   { icon: 'account-group', label: 'Users', navigateTo: 'Users' },
   { icon: 'chat', label: 'Chat', navigateTo: 'chat' },
+  // { icon: 'map-marker', label: 'Map', navigateTo: 'MapView' }
   // { icon: 'bookshelf', label: 'Library', navigateTo: 'Library' },
 ];
 const DrawerLayout = ({ icon, label, navigateTo }: any) => {
@@ -42,14 +43,14 @@ const DrawerItems = props => {
   });
 };
 function DrawerContent(props) {
-  const { setUserId } = useContext(AuthContext);
-  const { user } = useContext(AuthContext);
+  const { setAuthUser, user, setUserId } = useContext(AuthContext);
   const navigation = useNavigation();
 
 
   const Logout = async () => {
-    await AsyncStorage.clear();
+    await AsyncStorage.removeItem('authToken');
     setUserId(null);
+    setAuthUser(null);
   }
 
   return (
@@ -58,7 +59,7 @@ function DrawerContent(props) {
         <View style={styles.drawerContent}>
           <TouchableOpacity activeOpacity={0.8}>
             <View style={styles.userInfoSection}>
-              <Pressable onPress={() => navigation.navigate('Profile')} style={{ flexDirection: 'row', marginTop: 15, justifyContent:'flex-start', alignItems:'center' }} >
+              <Pressable onPress={() => navigation.navigate('Profile')} style={{ flexDirection: 'row', marginTop: 15, justifyContent: 'flex-start', alignItems: 'center' }} >
                 <Image source={{ uri: 'https://i.ibb.co/YySxPQC/pro.jpeg' }} style={{ height: 45, width: 45, borderRadius: 60 }} resizeMode="cover" />
                 <Text style={styles.title}>{user}</Text>
               </Pressable>
@@ -96,8 +97,8 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#000000',
     marginLeft: 15,
-    textDecorationStyle:'solid',
-    textDecorationLine:'underline'
+    textDecorationStyle: 'solid',
+    textDecorationLine: 'underline'
   },
   caption: {
     fontSize: 13,
